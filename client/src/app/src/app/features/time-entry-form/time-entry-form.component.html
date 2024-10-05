@@ -1,0 +1,140 @@
+<p-dialog position="top" header="Valitse jakso" [modal]="true" [(visible)]="showPrintDialog" [style]="{ width: '25rem', height: '55vh' }">
+  <div style="margin-bottom: 15px">
+    <label for="year">Vuosi</label>
+    <p-dropdown
+      id="year"
+      [options]="years"
+      [(ngModel)]="selectedYear"
+      optionLabel="name"
+      [style]="{ 'width': '200px' }"
+      placeholder="Valitse kuukausi" />
+  </div>
+  <div style="margin-bottom: 15px">
+    <label for="month">Kuukausi</label>
+    <p-dropdown
+      id="month"
+      [options]="months"
+      [(ngModel)]="selectedMonth"
+      optionLabel="name"
+      [style]="{ 'width': '200px' }"
+      placeholder="Valitse kuukausi" />
+  </div>
+  <div style="margin-bottom: 15px">
+    <label for="month">Jakso</label>
+      <p-dropdown
+        [options]="splits"
+        [(ngModel)]="selectedSplit"
+        optionLabel="name"
+        [style]="{ 'width': '200px' }"
+        placeholder="Valitse jakso" />
+  </div>
+  <div style="margin-top: 10px">
+    <p-button [style]="{ 'margin-right': '10px' }" label="Peruuta" severity="secondary" (onClick)="showPrintDialog = false"/>
+    <p-button label="Tulosta" severity="primary" (onClick)="generatePDF()"/>
+  </div>
+</p-dialog>
+<p-button
+  (click)="showPrintDialog = true"
+  severity="info"
+  type="button">
+  <i class="pi pi-print" style="font-size: 1.3rem"></i>
+</p-button>
+<form class="content" [formGroup]="timeEntryForm" (ngSubmit)="onSubmit()">
+  <section class="card form-card">
+    @if (isEditing) {
+      <h2>Muokkaa</h2>
+    } @else {
+      <h2>Lisää merkintä</h2>
+    }
+
+    <p style="text-align: center;">
+      {{ timeEntryForm.get('selectedDate')?.value | date: 'dd.MM.yyyy' }}
+    </p>
+
+    <div class="form-group calendar" style="flex-grow: 1;">
+      <p-calendar
+        id="date"
+        formControlName="selectedDate"
+        inline="true"
+        [showOtherMonths]="true"
+        [selectOtherMonths]="true"
+        [maxDate]="today"
+      >
+        <ng-template pTemplate="date" let-date>
+          <span [ngStyle]="getDateStyle(date, timeEntryForm.get('selectedDate')?.value, timeEntries)">
+            {{ date.day }}
+          </span>
+        </ng-template>
+      </p-calendar>
+    </div>
+
+    <div style="display: flex;">
+      <div style="display: flex; flex-direction: column;">
+        <div class="form-group">
+          <label for="startTime">Alkanut</label>
+          <p-calendar
+            id="startTime"
+            formControlName="startTime"
+            timeOnly="true"
+            hourFormat="24">
+          </p-calendar>
+        </div>
+        <div class="form-group">
+          <label for="endTime">Päättynyt</label>
+          <p-calendar
+            id="endTime"
+            formControlName="endTime"
+            timeOnly="true"
+            hourFormat="24">
+          </p-calendar>
+        </div>
+      </div>
+
+      @if (hasEntryForSelectedDate) {
+        <div class="button-container-column" style="flex-grow: 1;">
+          @if (isEditing) {
+            <button
+              class="big-button big-edit-button"
+              (click)="updateTimeEntry()"
+              type="button"
+              [disabled]="timeEntryForm.invalid">
+              <i class="pi pi-save" style="font-size: 1.3rem"></i>
+            </button>
+            <button
+              class="big-button big-undo-button"
+              (click)="disableEditing()"
+              type="button"
+              [disabled]="timeEntryForm.invalid">
+              <i class="pi pi-undo" style="font-size: 1.3rem"></i>
+            </button>
+          } @else {
+            <button
+              class="big-button big-edit-button"
+              (click)="enableEditing()"
+              type="button"
+              [disabled]="timeEntryForm.invalid">
+              <i class="pi pi-pencil" style="font-size: 1.3rem"></i>
+            </button>
+            <button
+              class="big-button big-trash-button"
+              type="button"
+              (click)="deleteTimeEntry()"
+              [disabled]="timeEntryForm.invalid">
+              <i class="pi pi-trash" style="font-size: 1.3rem"></i>
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="button-container" style="flex-grow: 1;">
+          <button
+            class="big-button big-plus-button"
+            type="submit"
+            [disabled]="timeEntryForm.invalid">
+            <i class="pi pi-plus" style="font-size: 1.3rem"></i>
+          </button>
+        </div>
+      }
+    </div>
+
+  </section>
+</form>

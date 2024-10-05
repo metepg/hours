@@ -1,0 +1,27 @@
+# Server
+server/target
+server/src/main/resources/application-dev.properties
+server/src/main/resources/static
+
+# Client
+client/npm-debug.log
+client/yarn-error.log
+client/node_modules
+client/client/dist
+
+client/.angular/cache
+client/.sass-cache/
+client/connect.lock
+client/coverage
+client/libpeerconnection.log
+clienttestem.log
+client/typings
+client/dist
+client/tmp
+client/out-tsc
+client/bazel-out
+client/node
+
+# Misc.
+.idea/
+target/
