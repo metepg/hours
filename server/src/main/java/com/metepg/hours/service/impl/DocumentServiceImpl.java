@@ -112,6 +112,7 @@ public class DocumentServiceImpl implements DocumentService {
         String monthName = monthEnum.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("fi"));
 
         // Capitalize the first letter of the month name
+        monthName = monthName.substring(0, monthName.length() - 2);
         monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1);
 
         // Sum hours and minutes
@@ -125,7 +126,7 @@ public class DocumentServiceImpl implements DocumentService {
         int workDays = entries.size();
 
         // Format the date range
-        String dateRange = split == 1 ? "1." + month + " - 15." + month : "16." + month + " - " + YearMonth.of(year, month).lengthOfMonth() + "." + month;
+        String dateRange = split == 1 ? "1. - 15." : "16. - " + YearMonth.of(year, month).lengthOfMonth() + ".";
 
         // Create a paragraph for the date range and month name
         String monthTitleText = year + " " + monthName + " " + dateRange;

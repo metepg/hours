@@ -5,6 +5,7 @@ import com.metepg.hours.model.TimeEntry;
 import com.metepg.hours.repository.TimeEntryRepository;
 import com.metepg.hours.service.TimeEntryService;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -85,6 +86,6 @@ public class TimeEntryServiceImpl implements TimeEntryService {
             endDate = yearMonth.atEndOfMonth();
         }
 
-        return timeEntryRepository.findAllByDateBetween(startDate, endDate);
+        return timeEntryRepository.findAllByDateBetween(startDate, endDate, Sort.by(Sort.Direction.ASC, "date"));
     }
 }

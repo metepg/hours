@@ -56,8 +56,7 @@
         id="date"
         formControlName="selectedDate"
         inline="true"
-        [showOtherMonths]="true"
-        [selectOtherMonths]="true"
+        [firstDayOfWeek]="1"
         [maxDate]="today"
       >
         <ng-template pTemplate="date" let-date>
