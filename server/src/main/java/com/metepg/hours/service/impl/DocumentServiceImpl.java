@@ -28,7 +28,6 @@ import java.util.Locale;
 @Service
 public class DocumentServiceImpl implements DocumentService {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("fi"));
     private final TimeEntryService timeEntryService;
 
     public DocumentServiceImpl(TimeEntryService timeEntryService) {
@@ -59,11 +58,11 @@ public class DocumentServiceImpl implements DocumentService {
     private void addTable(Document document, List<TimeEntry> entries) throws DocumentException {
         Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f);
 
-        float[] columnWidths = {2f, 2f, 2f, 2f};
+        float[] columnWidths = {2f, 2f};
         PdfPTable table = new PdfPTable(columnWidths);
         table.setWidthPercentage(100f);
 
-        List<String> headers = List.of("Päivämäärä", "Alkanut", "Päättynyt", "Tunnit yhteensä");
+        List<String> headers = List.of("Päivämäärä", "Tunnit yhteensä");
         addTableHeaders(table, headers, boldFont);
 
         addTableRows(table, entries);
@@ -84,18 +83,18 @@ public class DocumentServiceImpl implements DocumentService {
     private void addTableRows(PdfPTable table, List<TimeEntry> entries) {
         entries.forEach(entry -> {
             table.addCell(createTableCell(dateFormatter.format(entry.getDate())));
-            table.addCell(createTableCell(timeFormatter.format(entry.getStartTime())));
-            table.addCell(createTableCell(timeFormatter.format(entry.getEndTime())));
             table.addCell(createTableCell(calculateTotalHours(entry)));
         });
     }
 
     private String calculateTotalHours(TimeEntry entry) {
-        Duration duration = Duration.between(entry.getStartTime(), entry.getEndTime());
-        long hours = duration.toHours();
-        long minutes = duration.toMinutes() % 60;
-        if (minutes == 0) return hours + " h";
-        else return hours + " h " + minutes + " min";
+        long minutes = Duration.between(entry.getStartTime(), entry.getEndTime()).toMinutes();
+        if (entry.getHasLunch()) {
+            minutes -= 30;
+        }
+        long hours = minutes / 60;
+        long remainingMinutes = minutes % 60;
+        return remainingMinutes == 0 ? hours + " h" : hours + " h " + remainingMinutes + " min";
     }
 
     private PdfPCell createTableCell(String content) {
@@ -115,10 +114,11 @@ public class DocumentServiceImpl implements DocumentService {
         monthName = monthName.substring(0, monthName.length() - 2);
         monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1);
 
-        // Sum hours and minutes
+        // Sum total minutes for all entries
         long totalMinutes = entries.stream()
-                .mapToLong(entry -> Duration.between(entry.getStartTime(), entry.getEndTime()).toMinutes())
+                .mapToLong(entry -> Duration.between(entry.getStartTime(), entry.getEndTime()).toMinutes() - (entry.getHasLunch() ? 30 : 0))
                 .sum();
+
         long totalHours = totalMinutes / 60;
         long remainingMinutes = totalMinutes % 60;
 
@@ -134,12 +134,7 @@ public class DocumentServiceImpl implements DocumentService {
         monthTitle.setSpacingAfter(10f);
 
         // Create a paragraph for the total hours and minutes
-        String totalText;
-        if (remainingMinutes == 0) {
-            totalText = "Yhteensä: " + totalHours + " h";
-        } else {
-            totalText = "Yhteensä: " + totalHours + " h " + remainingMinutes + " min";
-        }
+        String totalText = remainingMinutes == 0 ? "Yhteensä: " + totalHours + " h" : "Yhteensä: " + totalHours + " h " + remainingMinutes + " min";
         Paragraph totalParagraph = new Paragraph(totalText, FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12f));
         totalParagraph.setSpacingAfter(10f);
 

@@ -33,14 +33,14 @@
     <p-button label="Tulosta" severity="primary" (onClick)="generatePDF()"/>
   </div>
 </p-dialog>
-<p-button
-  (click)="showPrintDialog = true"
-  severity="info"
-  type="button">
-  <i class="pi pi-print" style="font-size: 1.3rem"></i>
-</p-button>
 <form class="content" [formGroup]="timeEntryForm" (ngSubmit)="onSubmit()">
   <section class="card form-card">
+    <p-button
+      (click)="showPrintDialog = true"
+      severity="info"
+      type="button">
+      <i class="pi pi-print" style="font-size: 1.3rem"></i>
+    </p-button>
     @if (isEditing) {
       <h2>Muokkaa</h2>
     } @else {
@@ -67,9 +67,10 @@
       </p-calendar>
     </div>
 
+    <label class="form-group">Tunnit {{totalHours}}</label>
     <div style="display: flex;">
       <div style="display: flex; flex-direction: column;">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 5px">
           <label for="startTime">Alkanut</label>
           <p-calendar
             id="startTime"
@@ -78,7 +79,7 @@
             hourFormat="24">
           </p-calendar>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom: 5px">
           <label for="endTime">Päättynyt</label>
           <p-calendar
             id="endTime"
@@ -93,14 +94,21 @@
         <div class="button-container-column" style="flex-grow: 1;">
           @if (isEditing) {
             <button
-              class="big-button big-edit-button"
+              class="small-button small-lunch-button"
+              [ngStyle]="{ 'background-color': hasLunch ? '#28a745' : '#dc3545' }"
+              type="button"
+              (click)="toggleLunch()">
+              <i class="pi pi-clock" style="font-size: 1.3rem"></i>
+            </button>
+            <button
+              class="small-button big-edit-button"
               (click)="updateTimeEntry()"
               type="button"
               [disabled]="timeEntryForm.invalid">
               <i class="pi pi-save" style="font-size: 1.3rem"></i>
             </button>
             <button
-              class="big-button big-undo-button"
+              class="small-button big-undo-button"
               (click)="disableEditing()"
               type="button"
               [disabled]="timeEntryForm.invalid">
@@ -124,7 +132,18 @@
           }
         </div>
       } @else {
-        <div class="button-container" style="flex-grow: 1;">
+        <div class="button-container-column" style="flex-grow: 1;">
+          <button
+            class="big-button"
+            [ngStyle]="{ 'background-color': hasLunch ? '#28a745' : '#dc3545' }"
+            type="button"
+            (click)="toggleLunch()">
+            @if(hasLunch) {
+              <i class="pi pi-clock" style="font-size: 1.3rem"></i>
+            } @else {
+              <i class="pi pi-ban" style="font-size: 1.3rem"></i>
+            }
+          </button>
           <button
             class="big-button big-plus-button"
             type="submit"

@@ -3,7 +3,7 @@ import { TimeEntry } from '../src/app/features/time-entry-form/time-entry.model'
 export const getDateStyle = (date: any, selectedDate: Date, timeEntries: TimeEntry[]): Record<string, string> => {
   const current = new Date(date.year, date.month, date.day);
 
-  const isDatePresent = timeEntries.some((entry: TimeEntry) => {
+  const matchingEntry = timeEntries.find((entry: TimeEntry) => {
     const entryMonthDay = new Date(entry.date);
     return (
       entryMonthDay.getMonth() === current.getMonth() &&
@@ -31,16 +31,35 @@ export const getDateStyle = (date: any, selectedDate: Date, timeEntries: TimeEnt
   // Style if the date has an entry
   let finalStyle = { ...baseStyle };
 
-  if (isDatePresent) {
-    finalStyle = {
-      ...finalStyle,
-      'background-color': '#007bff', // Background color for dates with entries
-      'color': 'white',
-      'font-weight': 'bold',
-    };
+  if (matchingEntry) {
+    const startTime = new Date(`1970-01-01T${matchingEntry.startTime}`);
+    const endTime = new Date(`1970-01-01T${matchingEntry.endTime}`);
+    let totalMinutes = (endTime.getTime() - startTime.getTime()) / (1000 * 60);
+
+    if (matchingEntry.hasLunch) {
+      totalMinutes -= 30;
+    }
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours !== 7 || minutes !== 30) {
+      finalStyle = {
+        ...finalStyle,
+        'background-color': 'red',
+        'color': 'white',
+        'font-weight': 'bold',
+      };
+    } else {
+      finalStyle = {
+        ...finalStyle,
+        'background-color': '#007bff',
+        'color': 'white',
+        'font-weight': 'bold',
+      };
+    }
   }
 
-  // Apply the border if the date is the selected date, without overwriting existing styles
   if (isSelectedDate) {
     finalStyle = {
       ...finalStyle,

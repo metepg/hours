@@ -33,7 +33,7 @@ public class TimeEntryServiceImpl implements TimeEntryService {
     @Override
     public List<TimeEntryDTO> findAll() {
         return timeEntryRepository.findAll().stream()
-                .map(entry -> new TimeEntryDTO(entry.getId(), entry.getDate(), entry.getStartTime(), entry.getEndTime()))
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -59,17 +59,19 @@ public class TimeEntryServiceImpl implements TimeEntryService {
         LocalDate date = timeEntryDTO.date();
         LocalTime startTime = timeEntryDTO.startTime();
         LocalTime endTime = timeEntryDTO.endTime();
+        Boolean hasLunch = timeEntryDTO.hasLunch();
 
         TimeEntry timeEntry = new TimeEntry();
         timeEntry.setId(id);
         timeEntry.setDate(date);
         timeEntry.setStartTime(startTime);
         timeEntry.setEndTime(endTime);
+        timeEntry.setHasLunch(hasLunch);
         return timeEntry;
     }
 
     private TimeEntryDTO convertToDTO(TimeEntry timeEntry) {
-       return new TimeEntryDTO(timeEntry.getId(), timeEntry.getDate(), timeEntry.getStartTime(), timeEntry.getEndTime());
+        return new TimeEntryDTO(timeEntry.getId(), timeEntry.getDate(), timeEntry.getStartTime(), timeEntry.getEndTime(), timeEntry.getHasLunch());
     }
 
     @Override

@@ -45,6 +45,7 @@ export class TimeEntryFormComponent implements OnInit {
   currentId: number | undefined = -1;
   hasEntryForSelectedDate: boolean = false;
   showPrintDialog = false;
+  totalHours = '7h 30min';
   splits = [
     {name: '1', code: 1},
     {name: '2', code: 2},
@@ -79,6 +80,7 @@ export class TimeEntryFormComponent implements OnInit {
     { name: '2034', code: 2034 }
   ];
   selectedYear: any;
+  hasLunch = true;
 
   constructor(private timeEntryService: TimeEntryService,
               private formBuilder: FormBuilder,
@@ -89,10 +91,16 @@ export class TimeEntryFormComponent implements OnInit {
       selectedDate: [this.selectedDate, Validators.required],
       startTime: [this.createTime('08:00'), Validators.required],
       endTime: [this.createTime('16:00'), Validators.required],
+      hasLunch: this.hasLunch
     });
   }
 
   ngOnInit() {
+    this.timeEntryForm.valueChanges.subscribe(() => {
+      const {hours, minutes} = this.calculateHours();
+      this.totalHours = `${hours}h ${minutes}min`;
+    });
+
     this.timeEntryService.getAll().subscribe({
       next: (timeEntries) => {
         this.timeEntries = timeEntries;
@@ -109,13 +117,12 @@ export class TimeEntryFormComponent implements OnInit {
     this.timeEntryForm.get('selectedDate')?.valueChanges.subscribe((selectedDate: Date) => {
       this.onSelectedDateChange(selectedDate);
     });
-        const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-indexed month
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
 
-    // Set default selections to the current year, current month, and split = 1
     this.selectedYear = this.years.find(year => year.code === currentYear);
     this.selectedMonth = this.months.find(month => month.code === currentMonth);
-    this.selectedSplit = this.splits[0]; // Default split to 1
+    this.selectedSplit = this.splits[0];
   }
 
   private onSelectedDateChange(selectedDate: Date): void {
@@ -135,11 +142,13 @@ export class TimeEntryFormComponent implements OnInit {
     if (entry) {
       this.currentId = entry.id;
       this.setTimeFromValues(entry.startTime, entry.endTime);
+      this.hasLunch = entry.hasLunch;
       this.hasEntryForSelectedDate = true;
     } else {
       this.currentId = undefined;
       this.setTimeFromValues('08:00', '16:00');
       this.hasEntryForSelectedDate = false;
+      this.hasLunch = true;
     }
     this.updateFormControlsDisabledState();
   }
@@ -164,7 +173,7 @@ export class TimeEntryFormComponent implements OnInit {
     this.timeEntryService.add(timeEntry).subscribe({
       next: (timeEntry) => {
         this.timeEntries = [...this.timeEntries, timeEntry]
-        const time = this.getHoursMsg(timeEntry);
+        const time = this.totalHours;
         this.messageService.add({severity: 'success', summary: 'Merkintä tallennettiin onnistuneesti!', detail: time});
         this.hasEntryForSelectedDate = true;
         this.timeEntryForm.get('startTime')?.disable();
@@ -188,6 +197,7 @@ export class TimeEntryFormComponent implements OnInit {
     return {
       id: this.currentId,
       date: formattedDate,
+      hasLunch: this.hasLunch,
       startTime: formattedStartTime,
       endTime: formattedEndTime,
     };
@@ -216,7 +226,7 @@ export class TimeEntryFormComponent implements OnInit {
           this.timeEntries = [...this.timeEntries, timeEntry];
         }
 
-        const time = this.getHoursMsg(timeEntry);
+        const time = this.totalHours;
         this.messageService.add({severity: 'success', summary: 'Muokkaus tallennettu onnistuneesti!', detail: time});
 
         this.setTimeFromEntry(timeEntry);
@@ -260,25 +270,26 @@ export class TimeEntryFormComponent implements OnInit {
 
     this.timeEntryForm.patchValue({
       startTime: this.startTime,
-      endTime: this.endTime
+      endTime: this.endTime,
+      hasLunch: this.hasLunch
     });
   }
 
-  private getHoursMsg(entry: TimeEntry): string {
-    const [startHour, startMinute] = entry.startTime.split(':').map(Number);
-    const [endHour, endMinute] = entry.endTime.split(':').map(Number);
+  private calculateHours(): { hours: number; minutes: number } {
+    const endTime: Date = this.timeEntryForm.get('endTime')?.value;
+    const newEndTime = new Date(endTime);
+    if (this.hasLunch) {
+      newEndTime.setMinutes(newEndTime.getMinutes() - 30);
+    }
 
-    const startTime = new Date(0, 0, 0, startHour, startMinute);
-    const endTime = new Date(0, 0, 0, endHour, endMinute);
+    const startTime = this.timeEntryForm.get('startTime')?.value;
 
-    const diffInMs = endTime.getTime() - startTime.getTime();
-
-    const diffInMinutes = diffInMs / (1000 * 60);
+    let diffInMinutes = (newEndTime.getTime() - startTime.getTime()) / (1000 * 60);
 
     const hours = Math.floor(diffInMinutes / 60);
     const minutes = Math.floor(diffInMinutes % 60);
 
-    return `Kirjatut tunnit: ${hours}h ${minutes}min`;
+    return {hours, minutes}
   }
 
   deleteTimeEntry() {
@@ -337,4 +348,15 @@ export class TimeEntryFormComponent implements OnInit {
     return time;
   }
 
+  toggleLunch() {
+    this.hasLunch = !this.hasLunch;
+    const {hours, minutes} = this.calculateHours();
+    this.totalHours = `${hours}h ${minutes}min`;
+    this.messageService.add({
+      severity: this.hasLunch ? 'success' : 'error',
+      summary: this.hasLunch ? 'Lounas' : 'Ei lounasta',
+      detail: `- Päivän tunnit ${hours}h ${minutes}min`,
+      life: 3000
+    });
+  }
 }

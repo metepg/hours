@@ -36,6 +36,9 @@ public class TimeEntry {
     @Column(nullable = false)
     private LocalTime endTime;
 
+    @Column(nullable = false)
+    private Boolean hasLunch = true;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Instant createdAt;

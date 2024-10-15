@@ -1,0 +1,2 @@
+ALTER TABLE time_entries
+    ADD COLUMN has_lunch BOOLEAN DEFAULT TRUE;

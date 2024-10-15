@@ -7,7 +7,7 @@
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 0 20px 20px;
 }
 
 h2 {
@@ -19,7 +19,6 @@ h2 {
 }
 
 .form-group {
-  margin-bottom: 10px;
   margin-left: 15px;
 }
 
@@ -32,7 +31,7 @@ label {
 
 .button-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   width: 100px;
 }
@@ -60,6 +59,20 @@ label {
   cursor: pointer;
 }
 
+.small-button {
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
 .big-edit-button, .big-plus-button {
   background-color: #007bff;
   font-size: 48px;
@@ -68,6 +81,11 @@ label {
 .big-trash-button {
   background-color: lightcoral;
   font-size: 32px;
+}
+
+.small-lunch-button {
+  background-color: lightcoral;
+  font-size: 16px;
 }
 
 .big-undo-button {
