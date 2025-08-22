@@ -10,15 +10,17 @@ RUN npm run build
 
 # ---------- server ----------
 FROM maven:3.9-eclipse-temurin-21 AS build
-WORKDIR /app
+WORKDIR /app/server
 
-COPY server/pom.xml server/pom.xml
-RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests -pl server -am dependency:go-offline
+COPY server/pom.xml .
+RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests dependency:go-offline
 
-COPY server/ server/
-COPY --from=client /client/dist client/dist/
+COPY server/ .
 
-RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests -pl server -am package
+# copy built frontend to backend
+COPY --from=client /client/dist ./src/main/resources/static/
+
+RUN --mount=type=cache,target=/root/.m2 mvn -q -DskipTests package
 
 # ---------- runtime ----------
 FROM eclipse-temurin:21-jre
