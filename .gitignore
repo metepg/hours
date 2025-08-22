@@ -25,3 +25,5 @@ client/node
 # Misc.
 .idea/
 target/
+
+*.iml

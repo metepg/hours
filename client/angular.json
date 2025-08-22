@@ -15,7 +15,7 @@
 
           "options": {
             "outputPath": {
-              "base": "../server/src/main/resources/static",
+              "base": "dist",
               "browser": ""
             },
             "index": "src/index.html",

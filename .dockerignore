@@ -1,0 +1,32 @@
+# Maven
+target/
+*/target/
+.mvn/
+.settings/
+.classpath
+.project
+
+# Node / Angular
+*/node_modules/
+*/dist/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.sw?
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
