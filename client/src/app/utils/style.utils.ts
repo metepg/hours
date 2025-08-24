@@ -1,22 +1,22 @@
 import { TimeEntry } from '../src/app/features/time-entry-form/time-entry.model';
 
-export const getDateStyle = (date: any, selectedDate: Date, timeEntries: TimeEntry[]): Record<string, string> => {
+export const getDateStyle = (date: any, selectedDate: Date | null, timeEntries: TimeEntry[]): Record<string, string> => {
   const current = new Date(date.year, date.month, date.day);
 
   const matchingEntry = timeEntries.find((entry: TimeEntry) => {
-    const entryMonthDay = new Date(entry.date);
+    const date = new Date(entry.date);
     return (
-      entryMonthDay.getMonth() === current.getMonth() &&
-      entryMonthDay.getDate() === current.getDate()
+      date.getFullYear() === current.getFullYear() &&
+      date.getMonth() === current.getMonth() &&
+      date.getDate() === current.getDate()
     );
   });
 
-  // Check if the current date is the selected date
-  const isSelectedDate = (
+  const isSelectedDate =
+    !!selectedDate &&
     current.getDate() === selectedDate.getDate() &&
     current.getMonth() === selectedDate.getMonth() &&
-    current.getFullYear() === selectedDate.getFullYear()
-  );
+    current.getFullYear() === selectedDate.getFullYear();
 
   const baseStyle: Record<string, string> = {
     'width': '35px',
@@ -40,10 +40,16 @@ export const getDateStyle = (date: any, selectedDate: Date, timeEntries: TimeEnt
       totalMinutes -= 30;
     }
 
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-
-    if (hours !== 7 || minutes !== 30) {
+    if (totalMinutes > 450) {
+       // more than 7h30 = GREEN
+      finalStyle = {
+        ...finalStyle,
+        'background-color': 'green',
+        'color': 'white',
+        'font-weight': 'bold',
+      };
+    } else if (totalMinutes < 450) {
+       // less than 7h30 = RED
       finalStyle = {
         ...finalStyle,
         'background-color': 'red',
@@ -51,6 +57,7 @@ export const getDateStyle = (date: any, selectedDate: Date, timeEntries: TimeEnt
         'font-weight': 'bold',
       };
     } else {
+      // exactly 7h30 = BLUE
       finalStyle = {
         ...finalStyle,
         'background-color': '#007bff',
