@@ -37,7 +37,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             # latest for PR merges or manual runs
-            type=raw,value=latest,enable=${{ github.event_name != 'push' }}
+            type=raw,value=latest
             # semver tags for git tag pushes
             type=semver,pattern={{version}},prefix=
             type=semver,pattern={{major}}.{{minor}},prefix=
