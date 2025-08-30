@@ -2,8 +2,10 @@
   <div style="margin-bottom: 15px">
     <label for="year">Vuosi</label>
     <p-dropdown
+      appendTo="body"
       id="year"
       [options]="years"
+      scrollHeight="350px"
       [(ngModel)]="selectedYear"
       optionLabel="name"
       [style]="{ 'width': '200px' }"
@@ -13,8 +15,10 @@
     <label for="month">Kuukausi</label>
     <p-dropdown
       id="month"
+      appendTo="body"
       [options]="months"
       [(ngModel)]="selectedMonth"
+      scrollHeight="350px"
       optionLabel="name"
       [style]="{ 'width': '200px' }"
       placeholder="Valitse kuukausi" />
@@ -23,6 +27,7 @@
     <label for="month">Jakso</label>
       <p-dropdown
         [options]="splits"
+        appendTo="body"
         [(ngModel)]="selectedSplit"
         optionLabel="name"
         [style]="{ 'width': '200px' }"
