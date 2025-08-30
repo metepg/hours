@@ -66,27 +66,22 @@ export class TimeEntryFormComponent implements OnInit {
     { name: 'Joulukuu', code: 12 }
   ];
   selectedMonth: any;
-  years = [
-    { name: '2024', code: 2024 },
-    { name: '2025', code: 2025 },
-    { name: '2026', code: 2026 },
-    { name: '2027', code: 2027 },
-    { name: '2028', code: 2028 },
-    { name: '2029', code: 2029 },
-    { name: '2030', code: 2030 },
-    { name: '2031', code: 2031 },
-    { name: '2032', code: 2032 },
-    { name: '2033', code: 2033 },
-    { name: '2034', code: 2034 }
-  ];
+  // Min year = 2024
+  // Max year = current year + 2
+  years = [...Array(new Date().getFullYear() - 2024 + 3).keys()]
+    .map(i => {
+      const year = 2024 + i;
+      return { name: year.toString(), code: year };
+    });
   selectedYear: any;
   hasLunch = true;
 
-  constructor(private timeEntryService: TimeEntryService,
-              private formBuilder: FormBuilder,
-              private messageService: MessageService,
-              private documentService: DocumentService)
-  {
+  constructor(
+    private readonly timeEntryService: TimeEntryService,
+    private readonly formBuilder: FormBuilder,
+    private readonly messageService: MessageService,
+    private readonly documentService: DocumentService
+  ) {
     this.timeEntryForm = this.formBuilder.group({
       selectedDate: [this.selectedDate, Validators.required],
       startTime: [this.createTime('08:00'), Validators.required],
