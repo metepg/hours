@@ -18,3 +18,9 @@
   color: inherit !important;
   box-shadow: none !important;
 }
+
+.p-datepicker table td span {
+  width: 2rem !important;
+  height: 2rem !important;
+  line-height: 2rem !important;
+}
