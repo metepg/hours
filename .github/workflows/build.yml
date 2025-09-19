@@ -1,7 +1,12 @@
-name: Build & Push to GHCR
+name: Build and Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      run_tests:
+        description: "Run tests before build?"
+        type: boolean
+        default: true
   pull_request:
     branches: [ dev, main ]
     types:
@@ -15,12 +20,20 @@ permissions:
   packages: write
 
 jobs:
+  tests:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.run_tests }}
+    uses: ./.github/workflows/tests.yml
+    secrets: inherit
+
   build:
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    needs: [ tests ]
+    if: ${{ always() && (
+      (github.event_name == 'workflow_dispatch' && !inputs.run_tests) ||
+      ((github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.pull_request.merged == true) && needs.tests.result == 'success')
+      ) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: docker/setup-buildx-action@v3
 
       - name: Login to GHCR
@@ -36,8 +49,18 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            # latest for PR merges or manual runs
-            type=raw,value=latest
+            # push test for dev merges
+            type=raw,value=test,enable=${{ github.event.pull_request.base.ref == 'dev' }}
+
+            # push test for manual runs
+            type=raw,value=test,enable=${{ github.event_name == 'workflow_dispatch' }}
+
+            # push latest for main merges
+            type=raw,value=latest,enable=${{ github.event.pull_request.base.ref == 'main' }}
+
+            # push latest for direct pushes to main
+            type=raw,value=latest,enable=${{ github.ref_name == 'main' && github.event_name == 'push' }}
+
             # semver tags for git tag pushes
             type=semver,pattern={{version}},prefix=
             type=semver,pattern={{major}}.{{minor}},prefix=
@@ -53,3 +76,17 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Deploy to test environment
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          curl --request GET \
+            --url "${{ secrets.DEPLOY_WEBHOOK_DEV }}" \
+            --header "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN_DEV }}"
+
+      - name: Deploy to production environment
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
+        run: |
+          curl --request GET \
+            --url "${{ secrets.DEPLOY_WEBHOOK_MAIN }}" \
+            --header "Authorization: Bearer ${{ secrets.DEPLOY_TOKEN_MAIN }}"
