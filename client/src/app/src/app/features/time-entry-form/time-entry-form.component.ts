@@ -17,7 +17,6 @@ import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-timesheet-form',
-  standalone: true,
   imports: [
     CalendarModule,
     CardModule,
