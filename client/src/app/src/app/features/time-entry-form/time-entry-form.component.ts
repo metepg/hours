@@ -13,6 +13,7 @@ import { DocumentService } from './document.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-timesheet-form',
@@ -28,6 +29,7 @@ import { DropdownModule } from 'primeng/dropdown';
     InputTextModule,
     InputNumberModule,
     DropdownModule,
+    Button,
   ],
   templateUrl: './time-entry-form.component.html',
   styleUrl: './time-entry-form.component.css'
