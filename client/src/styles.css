@@ -12,3 +12,9 @@
 .p-toast {
   white-space: pre-line;
 }
+
+.p-datepicker .p-datepicker-day-selected {
+  background: none !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}

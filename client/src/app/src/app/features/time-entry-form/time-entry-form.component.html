@@ -1,7 +1,7 @@
 <p-dialog position="top" header="Valitse jakso" [modal]="true" [(visible)]="showPrintDialog" [style]="{ width: '25rem', height: '55vh' }">
   <div style="margin-bottom: 15px">
     <label for="year">Vuosi</label>
-    <p-dropdown
+    <p-select
       appendTo="body"
       id="year"
       [options]="years"
@@ -13,7 +13,7 @@
   </div>
   <div style="margin-bottom: 15px">
     <label for="month">Kuukausi</label>
-    <p-dropdown
+    <p-select
       id="month"
       appendTo="body"
       [options]="months"
@@ -25,7 +25,7 @@
   </div>
   <div style="margin-bottom: 15px">
     <label for="month">Jakso</label>
-      <p-dropdown
+      <p-select
         [options]="splits"
         appendTo="body"
         [(ngModel)]="selectedSplit"
@@ -56,8 +56,8 @@
       {{ timeEntryForm.get('selectedDate')?.value | date: 'dd.MM.yyyy' }}
     </p>
 
-    <div class="form-group calendar" style="flex-grow: 1;">
-      <p-calendar
+    <div class="haha form-group calendar" style="flex-grow: 1;">
+      <p-datePicker
         id="date"
         formControlName="selectedDate"
         inline="true"
@@ -69,7 +69,7 @@
             {{ date.day }}
           </span>
         </ng-template>
-      </p-calendar>
+      </p-datePicker>
     </div>
 
     <label class="form-group">Tunnit {{totalHours}}</label>
@@ -77,21 +77,21 @@
       <div style="display: flex; flex-direction: column;">
         <div class="form-group" style="margin-bottom: 5px">
           <label for="startTime">Alkanut</label>
-          <p-calendar
+          <p-datePicker
             id="startTime"
             formControlName="startTime"
             timeOnly="true"
             hourFormat="24">
-          </p-calendar>
+          </p-datePicker>
         </div>
         <div class="form-group" style="margin-bottom: 5px">
           <label for="endTime">Päättynyt</label>
-          <p-calendar
+          <p-datePicker
             id="endTime"
             formControlName="endTime"
             timeOnly="true"
             hourFormat="24">
-          </p-calendar>
+          </p-datePicker>
         </div>
       </div>
 

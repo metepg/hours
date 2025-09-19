@@ -1,14 +1,12 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TimeEntry } from './time-entry.model';
 
 @Injectable({providedIn: 'root'})
 export class TimeEntryService {
-  private apiUrl = '/api/time-entry';
-
-  constructor(private http: HttpClient) {
-  }
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = '/api/time-entry';
 
   getAll(): Observable<TimeEntry[]> {
     return this.http.get<TimeEntry[]>(`${this.apiUrl}`);

@@ -1,13 +1,11 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class DocumentService {
-  private apiUrl = '/api/document';
-
-  constructor(private http: HttpClient) {
-  }
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = '/api/document';
 
   generatePDF(year: number, month: number, split: number): Observable<HttpResponse<Blob>> {
     return this.http.get<Blob>(`${this.apiUrl}/pdf`, {

@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { CalendarModule } from 'primeng/calendar';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe, formatDate, NgStyle } from '@angular/common';
 import { CardModule } from 'primeng/card';
@@ -12,13 +11,13 @@ import { getDateStyle } from '../../../../utils/style.utils';
 import { DocumentService } from './document.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { DropdownModule } from 'primeng/dropdown';
 import { Button } from 'primeng/button';
+import { Select } from 'primeng/select';
+import { DatePicker } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-timesheet-form',
   imports: [
-    CalendarModule,
     CardModule,
     DatePipe,
     DialogModule,
@@ -27,14 +26,20 @@ import { Button } from 'primeng/button';
     NgStyle,
     InputTextModule,
     InputNumberModule,
-    DropdownModule,
     Button,
+    Select,
+    DatePicker,
   ],
   templateUrl: './time-entry-form.component.html',
   styleUrl: './time-entry-form.component.css'
 })
 
 export class TimeEntryFormComponent implements OnInit {
+  private readonly timeEntryService = inject(TimeEntryService);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly messageService = inject(MessageService);
+  private readonly documentService = inject(DocumentService);
+
   protected readonly getDateStyle = getDateStyle;
   timeEntryForm: FormGroup;
   startTime = new Date();
@@ -77,12 +82,7 @@ export class TimeEntryFormComponent implements OnInit {
   selectedYear: any;
   hasLunch = true;
 
-  constructor(
-    private readonly timeEntryService: TimeEntryService,
-    private readonly formBuilder: FormBuilder,
-    private readonly messageService: MessageService,
-    private readonly documentService: DocumentService
-  ) {
+  constructor() {
     this.timeEntryForm = this.formBuilder.group({
       selectedDate: [this.selectedDate, Validators.required],
       startTime: [this.createTime('08:00'), Validators.required],

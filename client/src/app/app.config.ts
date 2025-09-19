@@ -4,6 +4,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslationService } from './shared/translation.service';
 import { registerLocaleData } from '@angular/common';
 import localeFi from '@angular/common/locales/fi';
+import Lara from '@primeng/themes/lara';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
@@ -21,6 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     providePrimeNG({
       theme: {
+        preset: Lara,
         options: { darkModeSelector: false }
       }
     }),
