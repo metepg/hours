@@ -7,7 +7,8 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test --browsers=ChromeHeadless",
+    "test-no-watch": "ng test --browsers=ChromeHeadless --watch=false"
   },
   "dependencies": {
     "@angular/animations": "^20.3.1",
