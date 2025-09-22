@@ -15,6 +15,7 @@ import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
 import fi from '../../../../../../public/i18n/fi.json';
+import { version } from '../../../../../../package.json';
 
 @Component({
   selector: 'app-timesheet-form',
@@ -42,6 +43,7 @@ export class TimeEntryFormComponent implements OnInit {
   private readonly documentService = inject(DocumentService);
 
   protected readonly getDateStyle = getDateStyle;
+  version = version;
   timeEntryForm: FormGroup;
   startTime = new Date();
   endTime = new Date();
