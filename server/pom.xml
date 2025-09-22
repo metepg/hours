@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.metepg</groupId>
     <artifactId>hours</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <name>server</name>
     <description>Simple hour clocking app</description>
     <properties>
