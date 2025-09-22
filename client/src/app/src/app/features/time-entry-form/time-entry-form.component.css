@@ -1,8 +1,17 @@
 .content {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto;
-  padding: 0 15px;
+  height: 100vh;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.calendar {
+  flex: 1;
+  min-height: 0;
+  height: auto;
 }
 
 .calendar :where(.p-datepicker, .p-calendar) {
