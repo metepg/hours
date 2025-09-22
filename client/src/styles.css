@@ -5,12 +5,17 @@
   box-sizing: border-box;
 }
 
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
 .p-disabled {
   opacity: .3;
 }
 
 .p-toast {
   white-space: pre-line;
+  max-width: 95vw;
 }
 
 .p-datepicker .p-datepicker-day-selected {

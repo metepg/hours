@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe, formatDate, NgStyle } from '@angular/common';
 import { CardModule } from 'primeng/card';
@@ -14,6 +14,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { DatePicker } from 'primeng/datepicker';
+import fi from '../../../../../../public/i18n/fi.json';
 
 @Component({
   selector: 'app-timesheet-form',
@@ -290,8 +291,21 @@ export class TimeEntryFormComponent implements OnInit {
 
   deleteTimeEntry() {
     if (!this.currentId) return;
+    const entry = this.timeEntries.find((entry) => entry.id === this.currentId);
 
-    if (confirm("Haluatko poistaa kirjauksen?")) {
+    if (!entry) return;
+
+    const date = new Date(entry.date);
+    const weekday = fi.calendar.dayNames[date.getDay()];
+
+    const formattedDate =
+      `${weekday} ${date.toLocaleDateString('fi-FI', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      })}`;
+
+    if (confirm(`Haluatko poistaa kirjauksen päivältä ${formattedDate}?`)) {
 
       this.timeEntryService.delete(this.currentId).subscribe({
           next: response => {

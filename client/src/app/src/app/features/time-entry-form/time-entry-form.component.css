@@ -3,13 +3,6 @@
   max-width: 500px;
 }
 
-.form-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 0 20px 20px;
-}
-
 h2 {
   font-size: 24px;
   margin-top: 0;
@@ -18,11 +11,7 @@ h2 {
   text-align: center;
 }
 
-.form-group {
-  margin-left: 15px;
-}
-
-label {
+label, .hours-span{
   display: block;
   font-weight: bold;
   margin-bottom: 8px;
@@ -36,13 +25,19 @@ label {
   width: 100px;
 }
 
-.button-container-column {
+.button-row {
   display: flex;
   justify-content: space-between;
-  flex-direction: column;
-  align-items: end;
-  width: 100px;
-  padding-right: 20px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 3px;
+}
+
+.button-container-column {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: flex-end;
 }
 
 .big-button {
@@ -50,8 +45,8 @@ label {
   border: none;
   padding: 10px;
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,8 +54,7 @@ label {
   cursor: pointer;
 }
 
-.small-button {
-  color: white;
+.small-button { color: white;
   border: none;
   padding: 10px;
   border-radius: 50%;
@@ -73,31 +67,53 @@ label {
   cursor: pointer;
 }
 
-.big-edit-button, .big-plus-button {
+.big-plus-button, .big-save-button {
   background-color: #007bff;
   font-size: 48px;
 }
-.button-container-column > :first-child {
-  margin-top: 17px;
+
+.big-edit-button {
+  background-color: #ff9800;
+  font-size: 48px;
 }
 
 .big-trash-button {
-  background-color: lightcoral;
+  background-color: #dc3545;
   font-size: 32px;
 }
 
-.small-lunch-button {
+.big-lunch-button {
   background-color: lightcoral;
   font-size: 16px;
 }
 
 .big-undo-button {
-  background-color: #fd7e14;
+  background-color: #6c757d;
   font-size: 32px;
 }
 
 .calendar {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
   width: 100%;
-  min-height: 350px;
+}
+
+.time-row {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.time-fields {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+.time-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
