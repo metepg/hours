@@ -40,18 +40,28 @@
 </p-dialog>
 <form class="content" [formGroup]="timeEntryForm" (ngSubmit)="onSubmit()">
   <section>
-    <p-button
-      (click)="showPrintDialog = true"
-      severity="info"
-      type="button">
-      <i class="pi pi-print" style="font-size: 1.3rem"></i>
-    </p-button>
+    <div style="display: flex; align-items: center;">
+      <div style="flex: 0 0 auto;">
+        <p-button
+          (click)="showPrintDialog = true"
+          onkeyDown=""
+          severity="info"
+          type="button">
+          <i class="pi pi-print" style="font-size: 1.3rem"></i>
+        </p-button>
+      </div>
 
-    @if (isEditing) {
-      <h2>Muokkaa</h2>
-    } @else {
-      <h2>Lisää merkintä</h2>
-    }
+      <div style="flex: 1; text-align: center;">
+        @if (isEditing) {
+          <h2 style="margin: 0;">Muokkaa</h2>
+        } @else {
+          <h2 style="margin: 0;">Lisää merkintä</h2>
+        }
+      </div>
+
+      <div style="flex: 0 0 auto; width: 42px;"></div> <!-- spacer, same width as button -->
+    </div>
+
 
     <p style="text-align: center;">
       {{ timeEntryForm.get('selectedDate')?.value | date: 'dd.MM.yyyy' }}
@@ -122,7 +132,7 @@
             [iconDisplay]="'input'"
             hourFormat="24">
             <ng-template #inputicon let-clickCallBack="clickCallBack">
-              <i class="pi pi-clock" (click)="clickCallBack($event)"></i>
+              <i onkeyDown="" class="pi pi-clock" (click)="clickCallBack($event)"></i>
             </ng-template>
           </p-datePicker>
         </div>
