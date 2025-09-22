@@ -1,6 +1,12 @@
 .content {
   width: 100%;
   max-width: 500px;
+  margin: 0 auto;
+}
+
+.calendar :where(.p-datepicker, .p-calendar) {
+  width: 100% !important;
+  display: block;
 }
 
 h2 {
@@ -11,7 +17,7 @@ h2 {
   text-align: center;
 }
 
-label, .hours-span{
+label, .hours-span {
   display: block;
   font-weight: bold;
   margin-bottom: 8px;
@@ -25,12 +31,28 @@ label, .hours-span{
   width: 100px;
 }
 
+.calendar,
+.button-row,
+.time-row {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.calendar {
+  min-height: 400px;
+}
+
 .button-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
   margin-top: 3px;
+}
+.button-row .hours-span {
+  flex: 1;
+  text-align: start;
+  margin: 0;
 }
 
 .button-container-column {
@@ -54,7 +76,8 @@ label, .hours-span{
   cursor: pointer;
 }
 
-.small-button { color: white;
+.small-button {
+  color: white;
   border: none;
   padding: 10px;
   border-radius: 50%;
@@ -90,14 +113,6 @@ label, .hours-span{
 .big-undo-button {
   background-color: #6c757d;
   font-size: 32px;
-}
-
-.calendar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-  width: 100%;
 }
 
 .time-row {

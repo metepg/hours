@@ -1,5 +1,5 @@
 <p-dialog position="top" header="Valitse jakso" [modal]="true" [(visible)]="showPrintDialog" [style]="{ width: '25rem' }">
-  <div>
+  <div style="margin-bottom: 15px">
     <label for="year">Vuosi</label>
     <p-select
       appendTo="body"
@@ -23,7 +23,7 @@
       [style]="{ 'width': '200px' }"
       placeholder="Valitse kuukausi" />
   </div>
-  <div style="margin-bottom: 15px">
+  <div style="margin-bottom: 35px">
     <label for="month">Jakso</label>
     <p-select
       [options]="splits"
