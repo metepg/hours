@@ -118,7 +118,12 @@
             id="startTime"
             formControlName="startTime"
             timeOnly="true"
+            showIcon
+            [iconDisplay]="'input'"
             hourFormat="24">
+            <ng-template #inputicon let-clickCallBack="clickCallBack">
+              <i class="pi pi-clock" (click)="clickCallBack($event)"></i>
+            </ng-template>
           </p-datePicker>
         </div>
 
@@ -128,7 +133,12 @@
             id="endTime"
             formControlName="endTime"
             timeOnly="true"
+            showIcon
+            [iconDisplay]="'input'"
             hourFormat="24">
+            <ng-template #inputicon let-clickCallBack="clickCallBack">
+              <i onkeyDown="" class="pi pi-clock" (click)="clickCallBack($event)"></i>
+            </ng-template>
           </p-datePicker>
         </div>
       </div>
