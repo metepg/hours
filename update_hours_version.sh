@@ -18,7 +18,7 @@ git checkout dev
 git pull origin dev
 
 # Update Maven version
-mvn -f server/pom.xml versions:set -DnewVersion="$NEW_VERSION" -DgenerateBackupPoms=false
+./server/mvnw -f server/pom.xml versions:set -DnewVersion="$NEW_VERSION" -DgenerateBackupPoms=false
 
 # Update npm version
 npm --prefix client version "$NEW_VERSION" --no-git-tag-version
