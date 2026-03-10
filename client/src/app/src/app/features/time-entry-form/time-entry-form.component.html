@@ -1,4 +1,4 @@
-<p-dialog position="top" header="Valitse jakso" [modal]="true" [(visible)]="showPrintDialog" [style]="{ width: '25rem' }">
+<p-dialog position="top" header="Valitse jakso" [modal]="true" [(visible)]="showPrintDialog" [style]="{ width: '25rem', margin: 0 }">
   <div style="margin-bottom: 15px">
     <label for="year">Vuosi</label>
     <p-select
@@ -134,6 +134,9 @@
             timeOnly="true"
             showIcon
             [iconDisplay]="'input'"
+            [touchUI]="true"
+            [stepMinute]="15"
+            [readonlyInput]="true"
             hourFormat="24">
             <ng-template #inputicon let-clickCallBack="clickCallBack">
               <i onkeyDown="" class="pi pi-clock" (click)="clickCallBack($event)"></i>
@@ -149,6 +152,9 @@
             timeOnly="true"
             showIcon
             [iconDisplay]="'input'"
+            [touchUI]="true"
+            [stepMinute]="15"
+            [readonlyInput]="true"
             hourFormat="24">
             <ng-template #inputicon let-clickCallBack="clickCallBack">
               <i onkeyDown="" class="pi pi-clock" (click)="clickCallBack($event)"></i>
