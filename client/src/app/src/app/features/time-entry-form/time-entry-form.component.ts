@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DatePipe, formatDate, NgStyle } from '@angular/common';
+import { DatePipe, NgStyle } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TimeEntryService } from './time-entry.service';
 import { DialogModule } from 'primeng/dialog';
@@ -88,8 +88,8 @@ export class TimeEntryFormComponent implements OnInit {
   constructor() {
     this.timeEntryForm = this.formBuilder.group({
       selectedDate: [this.selectedDate, Validators.required],
-      startTime: [this.createTime('08:00'), Validators.required],
-      endTime: [this.createTime('16:00'), Validators.required],
+      startTime: ['08:00', Validators.required],
+      endTime: ['16:00', Validators.required],
       hasLunch: this.hasLunch
     });
   }
@@ -191,14 +191,15 @@ export class TimeEntryFormComponent implements OnInit {
 
   private getFormattedEntry(): TimeEntry {
     const formattedDate = this.getDateInCorrectFormat(this.timeEntryForm.get('selectedDate')?.value);
-    const formattedStartTime = formatDate(this.timeEntryForm.get('startTime')?.value, 'HH:mm', 'fi-FI');
-    const formattedEndTime = formatDate(this.timeEntryForm.get('endTime')?.value, 'HH:mm', 'fi-FI');
+    const startTime: string = this.timeEntryForm.get('startTime')?.value;
+    const endTime: string = this.timeEntryForm.get('endTime')?.value;
+
     return {
       id: this.currentId,
       date: formattedDate,
       hasLunch: this.hasLunch,
-      startTime: formattedStartTime,
-      endTime: formattedEndTime,
+      startTime,
+      endTime,
     };
   }
 
@@ -244,51 +245,59 @@ export class TimeEntryFormComponent implements OnInit {
   }
 
   private setTimeFromValues(startTimeStr: string, endTimeStr: string): void {
-    const [startHour, startMinute] = startTimeStr.split(':').map(Number);
-    const [endHour, endMinute] = endTimeStr.split(':').map(Number);
-
-    const startTime = new Date();
-    startTime.setHours(startHour, startMinute, 0, 0);
-
-    const endTime = new Date();
-    endTime.setHours(endHour, endMinute, 0, 0);
-
     this.timeEntryForm.patchValue({
-      startTime: startTime,
-      endTime: endTime
+      startTime: startTimeStr,
+      endTime: endTimeStr
     });
   }
 
   private setTimeFromEntry(entry: TimeEntry | undefined): void {
-    if (!entry) return;
-    const [startHour, startMinute] = entry.startTime.split(':').map(Number);
-    const [endHour, endMinute] = entry.endTime.split(':').map(Number);
-
-    this.startTime.setHours(startHour, startMinute, 0);
-    this.endTime.setHours(endHour, endMinute, 0);
+    if (!entry) {
+      return;
+    }
 
     this.timeEntryForm.patchValue({
-      startTime: this.startTime,
-      endTime: this.endTime,
-      hasLunch: this.hasLunch
+      startTime: entry.startTime,
+      endTime: entry.endTime,
+      hasLunch: entry.hasLunch
     });
   }
 
   private calculateHours(): { hours: number; minutes: number } {
-    const endTime: Date = this.timeEntryForm.get('endTime')?.value;
-    const newEndTime = new Date(endTime);
-    if (this.hasLunch) {
-      newEndTime.setMinutes(newEndTime.getMinutes() - 30);
+    let startVal = this.timeEntryForm.get('startTime')?.value;
+    let endVal = this.timeEntryForm.get('endTime')?.value;
+
+    if (!startVal || !endVal) {
+      return { hours: 0, minutes: 0 };
     }
 
-    const startTime = this.timeEntryForm.get('startTime')?.value;
+    if (startVal instanceof Date) {
+      startVal = `${String(startVal.getHours()).padStart(2, '0')}:${String(startVal.getMinutes()).padStart(2, '0')}`;
+    }
+    if (endVal instanceof Date) {
+      endVal = `${String(endVal.getHours()).padStart(2, '0')}:${String(endVal.getMinutes()).padStart(2, '0')}`;
+    }
 
-    let diffInMinutes = (newEndTime.getTime() - startTime.getTime()) / (1000 * 60);
+    const [sH, sM] = startVal.split(':').map(Number);
+    const [eH, eM] = endVal.split(':').map(Number);
+
+    const startDate = new Date();
+    startDate.setHours(sH, sM, 0, 0);
+
+    const endDate = new Date();
+    endDate.setHours(eH, eM, 0, 0);
+
+    if (this.hasLunch) {
+      endDate.setMinutes(endDate.getMinutes() - 30);
+    }
+
+    let diffInMinutes = (endDate.getTime() - startDate.getTime()) / (1000 * 60);
+    if (diffInMinutes < 0) diffInMinutes = 0;
 
     const hours = Math.floor(diffInMinutes / 60);
     const minutes = Math.floor(diffInMinutes % 60);
 
-    return {hours, minutes}
+    return { hours, minutes };
   }
 
   deleteTimeEntry() {
@@ -351,13 +360,6 @@ export class TimeEntryFormComponent implements OnInit {
       this.timeEntryForm.get('startTime')?.enable();
       this.timeEntryForm.get('endTime')?.enable();
     }
-  }
-
-  private createTime(timeStr: string): Date {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    const time = new Date();
-    time.setHours(hours, minutes, 0, 0);
-    return time;
   }
 
   toggleLunch() {

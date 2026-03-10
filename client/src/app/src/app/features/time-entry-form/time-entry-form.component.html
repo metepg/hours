@@ -126,41 +126,29 @@
     <!-- time fields row -->
     <div class="time-row">
       <div class="time-fields">
-        <div class="time-field">
-          <label for="startTime">Alkanut</label>
-          <p-datePicker
-            id="startTime"
-            formControlName="startTime"
-            timeOnly="true"
-            showIcon
-            [iconDisplay]="'input'"
-            [touchUI]="true"
-            [stepMinute]="15"
-            [readonlyInput]="true"
-            hourFormat="24">
-            <ng-template #inputicon let-clickCallBack="clickCallBack">
-              <i onkeyDown="" class="pi pi-clock" (click)="clickCallBack($event)"></i>
-            </ng-template>
-          </p-datePicker>
-        </div>
 
         <div class="time-field">
-          <label for="endTime">Päättynyt</label>
-          <p-datePicker
-            id="endTime"
-            formControlName="endTime"
-            timeOnly="true"
-            showIcon
-            [iconDisplay]="'input'"
-            [touchUI]="true"
-            [stepMinute]="15"
-            [readonlyInput]="true"
-            hourFormat="24">
-            <ng-template #inputicon let-clickCallBack="clickCallBack">
-              <i onkeyDown="" class="pi pi-clock" (click)="clickCallBack($event)"></i>
-            </ng-template>
-          </p-datePicker>
+          <label for="startTime" class="font-bold block mb-2">Alkanut</label>
+          <input
+            id="startTime"
+            type="time"
+            formControlName="startTime"
+            step="900"
+            class="p-inputtext p-component w-full native-time-input"
+          />
         </div>
+
+        <div class="time-field mt-3">
+          <label for="endTime" class="font-bold block mb-2">Päättynyt</label>
+          <input
+            id="endTime"
+            type="time"
+            formControlName="endTime"
+            step="900"
+            class="p-inputtext p-component w-full native-time-input"
+          />
+        </div>
+
       </div>
     </div>
 
