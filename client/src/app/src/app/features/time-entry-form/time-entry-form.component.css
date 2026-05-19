@@ -1,7 +1,7 @@
 .content {
   width: 100%;
   max-width: 500px;
-  height: 100vh;
+  min-height: 100dvh;
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -12,6 +12,8 @@
   flex: 1;
   min-height: 0;
   height: auto;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .calendar :where(.p-datepicker, .p-calendar) {
@@ -41,7 +43,6 @@ label, .hours-span {
   width: 100px;
 }
 
-.calendar,
 .button-row,
 .time-row {
   width: 100%;
@@ -72,13 +73,11 @@ label, .hours-span {
   justify-content: flex-end;
 }
 
-.big-button {
+.big-button,
+.small-button {
   color: white;
   border: none;
-  padding: 10px;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -86,18 +85,16 @@ label, .hours-span {
   cursor: pointer;
 }
 
-.small-button {
-  color: white;
-  border: none;
+.big-button {
   padding: 10px;
-  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.small-button {
+  padding: 10px;
   width: 40px;
   height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
 }
 
 .big-plus-button, .big-save-button {
@@ -151,4 +148,6 @@ input[type="time"] {
   color: rgb(51, 65, 85);
   font-size: 1rem;
   font-family: 'Source Sans Pro', sans-serif;
+  appearance: auto;
+  -webkit-appearance: auto;
 }
